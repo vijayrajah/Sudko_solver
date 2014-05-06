@@ -26,6 +26,8 @@ sud_stats_arr=[[]]
 
 
 def init_3d_arr (__sud_3d_arr,__init_sud_arr):
+    ##Return: Sud_3d_arr
+    ##Args: __sud_3d_arr,__init_sud_arr
     
     
     ##We will first initialize all the cells to zero
@@ -51,6 +53,8 @@ def init_3d_arr (__sud_3d_arr,__init_sud_arr):
     return (__sud_3d_arr)
 
 def init_stats_arr (__sud_stats_arr):
+    ##Return: sud_stats_arr
+    ##Args: __sud_stats_arr
     
     for x in range (0, XMAX):
         __sud_stats_arr.append([])
@@ -61,8 +65,9 @@ def init_stats_arr (__sud_stats_arr):
 
 
 def print_sud (sud_arr):
-#     numrows = len(input)    # 3 rows in your example
-#     numcols = len(input[0]) # 2 columns in your example
+    #Return: NONE
+    #Args: sud_arr (2d)
+    
 
     ROWS=len(sud_arr)
     COLS=len(sud_arr[0])
@@ -90,6 +95,8 @@ def print_sud (sud_arr):
             
 
 def print_stats_arr (__sud_stats_arr):
+    #Return: NONE
+    #Args: __sud_stats_arr
     
     ROWS=len(sud_arr)
     COLS=len(sud_arr[0])
@@ -106,11 +113,6 @@ def print_stats_arr (__sud_stats_arr):
  
             print(__sud_stats_arr[i][j],end=END)
             
-#             if (sud_arr[i][j]==0):
-#                 print (" ",end=END)
-#             else:
-#                 print (sud_arr[i][j],end=END)
-#                 
         print()
         
         if ((i==2) or (i == 5)):
@@ -120,6 +122,8 @@ def print_stats_arr (__sud_stats_arr):
     
              
 def print_sud_3d_arr (sud_3d_arr):
+    #Return: NONE
+    #Args: sud_3d_arr
     
     temp_sud_arr=[[]]
     
@@ -133,6 +137,8 @@ def print_sud_3d_arr (sud_3d_arr):
     
 
 def get_stats (__sud_stats_arr,__sud_3d_arr):
+    #Return: sud_stats_arr, n_ele (no of filled Elements)
+    #Args: __sud_stats_arr,__sud_3d_arr
     
     ##__sud_stats_arr is a 2d array
     __n_ele=0
@@ -152,6 +158,8 @@ def get_stats (__sud_stats_arr,__sud_3d_arr):
     return (__sud_stats_arr,__n_ele)
 
 def get_x1_x2 (x):
+    #Return: x1,x2 -- Get 3x3 Cell based on a current position
+    #Args: x
     
     if ((x==0) or (x==1) or (x==2)):
         x1=0
@@ -171,6 +179,9 @@ def get_x1_x2 (x):
 
 
 def remove_elements_based_on_solved_cells(__sud_3d_arr):
+    #Return: sud_3d_arr
+    #Args: sud_3d_arr
+    #Description: FIXME
     
     
     for x in range (0, XMAX):
@@ -194,6 +205,8 @@ def remove_elements_based_on_solved_cells(__sud_3d_arr):
     return (__sud_3d_arr)
 
 def place_singletons(__sud_3d_arr,__sud_stats_arr):
+    #Return: __sud_3d_arr
+    #Args: __sud_3d_arr,__sud_stats_arr
     
     n_ele=0
     ele=0
@@ -216,6 +229,9 @@ def place_singletons(__sud_3d_arr,__sud_stats_arr):
     
 
 def simple_solution(__sud_3d_arr):
+    #Return: sud_3d_arr
+    #Args: sud_3d_arr
+    
     ###
     
     for x in range (0, XMAX):
@@ -291,29 +307,67 @@ def simple_solution(__sud_3d_arr):
 
 
 def solve_sudoko(__sud_3d_arr,__sud_stats_arr):
+    #Return: sud_3d_arr
+    #Args: sud_3d_arr, sud_stats_arr
     
     old_n_s_ele=0
     n_s_ele=0
     ##Let's get status
     __sud_stats_arr,n_s_ele=get_stats(__sud_stats_arr, __sud_3d_arr)
-    print("DEBUG: Initial solved Elements is " + str(n_s_ele))
+#     print("DEBUG: Initial solved Elements is " + str(n_s_ele))
     #old_n_s_ele=n_s_ele
     
     while (n_s_ele > old_n_s_ele):
-        print("\n\n\n##################################")
-        print_sud_3d_arr(sud_3d_arr)
+#         print("\n\n\n##################################")
+        __sud_3d_arr=place_singletons(__sud_3d_arr, __sud_stats_arr)
+#         print_sud_3d_arr(sud_3d_arr)
         old_n_s_ele=n_s_ele
         __sud_3d_arr=simple_solution(__sud_3d_arr)
         __sud_stats_arr,n_s_ele=get_stats(__sud_stats_arr, __sud_3d_arr)
     
-    print("DEBUG: Return Num of solved elements is " + str(n_s_ele))
-    print("DEBUG: The retuen STATS matrix\n")
-    print_stats_arr(__sud_stats_arr)
+#     print("DEBUG: Return Num of solved elements is " + str(n_s_ele))
+#     print("DEBUG: The retuen STATS matrix\n")
+#     print_stats_arr(__sud_stats_arr)
     #__sud_3d_arr=place_singletons(__sud_3d_arr, __sud_stats_arr)
     return(__sud_3d_arr)
 
+def check_sudoku(__sud_3d_arr):
+    #Return: 0, all element is ok, 1 -- there is a error in sudoku
+    #Args: sud_3d_arr
+    
+    #We will check rows first
+    for x in range (0, XMAX):
+        for y in range (0,YMAX):
+            if ( __sud_3d_arr[x][y][0] != 0 ):
+                for _x in range (0,XMAX):
+                    if (_x != x ):
+                        if (__sud_3d_arr[x][y][0] == __sud_3d_arr[_x][y][0] ):
+                            return(1)
+                
+                for _y in range (0,YMAX):
+                    if (_y != y):
+                        if (__sud_3d_arr[x][y][0] == __sud_3d_arr[x][_y][0]):
+                            ##We have 2 elements that are same. #we have an error
+                            return(1)
+                        
+                
+                ##We wil check the 3x3 array for any conflicts
+                x1,x2=get_x1_x2(x)
+                y1,y2=get_x1_x2(y)
+                
+                for _x in range (x1, x2+1):
+                    for _y in range (y1,y2+1):
+                        if ((_x != x) and (_y != y)):
+                            if (__sud_3d_arr[_x][_y][0] == __sud_3d_arr[x][y][0]):
+                                return(1)
+
+    
+    return(0)
 
 def recursivesolver(__sud_3d_arr,__sud_stats_arr):
+    #Result: sud_3d_arr, Ret_val -- 0 success, 1 -- Fail
+    #Args: sud_3d_arr, sud_stats_arr
+    
     ##Algorithm
     # 1. find the cell with lowest possibility, assigin a value to it (out of the possibilities)
     # 2. remove all the possbilities from adjecnt cells,
@@ -375,8 +429,11 @@ def recursivesolver(__sud_3d_arr,__sud_stats_arr):
             
             __sud_3d_arr_temp=remove_elements_based_on_solved_cells(__sud_3d_arr_temp)
             #
-            __sud_3d_arr_temp=simple_solution(__sud_3d_arr_temp)
-            #__sud_3d_arr_temp=solve_sudoko(__sud_3d_arr, __sud_stats_arr)
+            #__sud_3d_arr_temp=simple_solution(__sud_3d_arr_temp)
+            __sud_3d_arr_temp=solve_sudoko(__sud_3d_arr_temp, __sud_stats_arr)
+            
+            if (check_sudoku(__sud_3d_arr_temp) != 0):
+                pass
             
             __sud_3d_arr_temp_1,ret=recursivesolver(__sud_3d_arr_temp, __sud_stats_arr)
             
@@ -392,6 +449,8 @@ def recursivesolver(__sud_3d_arr,__sud_stats_arr):
     
 
 def copy_3d_sud_arr(__sud_3d_arr):
+    #Return: ret_3d_arr
+    #Args: sud_3d_arr
     
     #ret_3d_arr=[[[]]]
     ret_3d_arr=[[[]]]
@@ -409,6 +468,8 @@ def copy_3d_sud_arr(__sud_3d_arr):
     return (ret_3d_arr)
     
 def check_if_ele_can_place_cell(__sud_3d_arr,__ele,_x,_y):
+    #Return: 0,1 0 - Yes the element can be placed in sudoku -- 1, the element cannot be placed
+    #Args: sud_3d_arr, ele, x, y  -- ele-- Element to be placed, x & y -- the 2d location in sudoku array
     
     #Let's check row's first
     for i in range (0, XMAX):
@@ -457,9 +518,9 @@ print_sud_3d_arr(sud_3d_arr)
 
 #sud_3d_arr=simple_solution(sud_3d_arr)
 
-sud_3d_arr=solve_sudoko(sud_3d_arr,sud_stats_arr)
-print("\n\n\n##################################")
-print_sud_3d_arr(sud_3d_arr)
+# sud_3d_arr=solve_sudoko(sud_3d_arr,sud_stats_arr)
+# print("\n\n\n##################################")
+# print_sud_3d_arr(sud_3d_arr)
 
 print("Recursive solver\n")
 
